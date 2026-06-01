@@ -2,269 +2,215 @@ package com.mycompany.app;
 
 import org.junit.Test;
 import static org.junit.Assert.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-public class Tests {
+public class ProgramTest {
 
     @Test
-    public void testGameInitialization() {
-        Game game = new Game();
-        assertEquals(State.PLAYING, game.state);
-        for (int i = 0; i < 9; i++) {
-            assertEquals(' ', game.board[i]);
-        }
-        assertEquals('X', game.player1.symbol);
-        assertEquals('O', game.player2.symbol);
+    public void gridStartsEmpty() {
+        Program p = new Program();
+        assertEquals(Program.NONE, p.getCell(0, 0));
+        assertEquals(Program.NONE, p.getCell(1, 1));
+        assertEquals(Program.NONE, p.getCell(2, 2));
     }
 
     @Test
-    public void testCheckStateXWinRow() {
-        Game game = new Game();
-        game.board = new char[]{
-            ' ',' ',' ',
-            'X','X','X',
-            ' ',' ',' '
-        };
-        game.symbol = 'X';
-        assertEquals(State.XWIN, game.checkState(game.board));
+    public void firstTurnIsX() {
+        Program p = new Program();
+        assertEquals(Program.X, p.getTurn());
     }
 
     @Test
-    public void testCheckStateOWinColumn() {
-        Game game = new Game();
-        game.board = new char[]{
-            ' ','O',' ',
-            ' ','O',' ',
-            ' ','O',' '
-        };
-        game.symbol = 'O';
-        assertEquals(State.OWIN, game.checkState(game.board));
+    public void placeValidMove() {
+        Program p = new Program();
+        assertTrue(p.place(0, 0));
+        assertEquals(Program.X, p.getCell(0, 0));
+        assertEquals(Program.O, p.getTurn());
     }
 
     @Test
-    public void testCheckStateDraw() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','O','X',
-            'X','O','O',
-            'O','X','X'
-        };
-        game.symbol = 'X';
-        assertEquals(State.DRAW, game.checkState(game.board));
+    public void placeInvalidRowLow() {
+        Program p = new Program();
+        assertFalse(p.place(-1, 0));
     }
 
     @Test
-    public void testCheckStatePlaying() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','O','X',
-            ' ','O',' ',
-            ' ',' ',' '
-        };
-        game.symbol = 'X';
-        assertEquals(State.PLAYING, game.checkState(game.board));
-    }
-
-
-
-    @Test
-    public void testGenerateMovesPartialBoard() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X',' ','O',
-            ' ','X',' ',
-            ' ',' ',' '
-        };
-        ArrayList<Integer> moves = new ArrayList<>();
-        game.generateMoves(game.board, moves);
-        assertEquals(6, moves.size());
-        assertFalse(moves.contains(0));
-        assertFalse(moves.contains(2));
-        assertFalse(moves.contains(4));
+    public void placeInvalidRowHigh() {
+        Program p = new Program();
+        assertFalse(p.place(3, 0));
     }
 
     @Test
-    public void testEvaluatePositionXWinForX() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X',' ','X',
-            'O','X',' ',
-            'O','O','X'
-        };
-        game.symbol = 'X';
-        game.player1.symbol = 'X';
-        assertEquals(+Game.INF, game.evaluatePosition(game.board, game.player1));
+    public void placeInvalidColLow() {
+        Program p = new Program();
+        assertFalse(p.place(0, -1));
     }
 
     @Test
-    public void testEvaluatePositionXWinForO() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','X','X',
-            ' ',' ',' ',
-            ' ',' ',' '
-        };
-        game.symbol = 'X';
-        game.player2.symbol = 'O';
-        assertEquals(-Game.INF, game.evaluatePosition(game.board, game.player2));
+    public void placeInvalidColHigh() {
+        Program p = new Program();
+        assertFalse(p.place(0, 3));
     }
 
     @Test
-    public void testEvaluatePositionDraw() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','O','X',
-            'X','O','O',
-            'O','X','X'
-        };
-        game.symbol = 'X';
-        assertEquals(0, game.evaluatePosition(game.board, game.player1));
+    public void placeOccupiedCell() {
+        Program p = new Program();
+        p.place(1, 1);
+        assertFalse(p.place(1, 1));
     }
 
     @Test
-    public void testEvaluatePositionNonTerminal() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','O',' ',
-            ' ',' ',' ',
-            ' ',' ',' '
-        };
-        game.symbol = 'X';
-        assertEquals(-1, game.evaluatePosition(game.board, game.player1));
+    public void turnSwitchesAfterMove() {
+        Program p = new Program();
+        p.place(0, 0);
+        assertEquals(Program.O, p.getTurn());
+        p.place(0, 1);
+        assertEquals(Program.X, p.getTurn());
     }
 
     @Test
-    public void testMiniMaxOnPartialBoard() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','O','X',
-            'X','O','O',
-            ' ','X',' '
-        };
-        game.player2.symbol = 'O';
-        int move = game.MiniMax(game.board, game.player2);
-        assertTrue(move >= 1 && move <= 9);
+    public void clearGridResetsEverything() {
+        Program p = new Program();
+        p.place(0, 0);
+        p.place(1, 1);
+        p.clearGrid();
+        assertEquals(Program.NONE, p.getCell(0, 0));
+        assertEquals(Program.NONE, p.getCell(1, 1));
+        assertEquals(Program.X, p.getTurn());
     }
 
     @Test
-    public void testMiniMaxWithThreat() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','X',' ',
-            ' ','O',' ',
-            ' ',' ',' '
-        };
-        game.player2.symbol = 'O';
-        int move = game.MiniMax(game.board, game.player2);
-        assertTrue(move >= 1 && move <= 9);
+    public void findWinnerRowX() {
+        Program p = new Program();
+        p.place(0, 0); p.place(1, 0);
+        p.place(0, 1); p.place(1, 1);
+        p.place(0, 2);
+        assertEquals(Program.X, p.findWinner());
     }
 
     @Test
-    public void testMiniMaxLastCell() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','O','X',
-            'X','O','O',
-            'O','X',' '
-        };
-        game.player2.symbol = 'O';
-        int move = game.MiniMax(game.board, game.player2);
-        assertEquals(9, move);
+    public void findWinnerColO() {
+        Program p = new Program();
+        p.place(0, 0); p.place(1, 0);
+        p.place(0, 1); p.place(1, 1);
+        p.place(2, 2); p.place(1, 2);
+        assertEquals(Program.O, p.findWinner());
     }
 
     @Test
-    public void testMinMoveTerminal() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','X','X',
-            ' ','O',' ',
-            ' ',' ',' '
-        };
-        game.symbol = 'X';
-        int val = game.MinMove(game.board, game.player2);
-        assertEquals(-Game.INF, val);
+    public void findWinnerDiag() {
+        Program p = new Program();
+        p.place(0, 0); p.place(0, 1);
+        p.place(1, 1); p.place(0, 2);
+        p.place(2, 2);
+        assertEquals(Program.X, p.findWinner());
     }
 
     @Test
-    public void testMaxMoveTerminal() {
-        Game game = new Game();
-        game.board = new char[]{
-            'X','X','X',
-            ' ','O',' ',
-            ' ',' ',' '
-        };
-        game.symbol = 'X';
-        int val = game.MaxMove(game.board, game.player1);
-        assertEquals(+Game.INF, val);
+    public void findWinnerAntiDiag() {
+        Program p = new Program();
+        p.place(0, 2); p.place(0, 0);
+        p.place(1, 1); p.place(0, 1);
+        p.place(2, 0);
+        assertEquals(Program.X, p.findWinner());
     }
 
     @Test
-    public void testUtilityPrintCharArray() {
-        char[] board = {
-            'X','O',' ',
-            ' ','X',' ',
-            ' ',' ',' '
-        };
-        Utility.print(board);
+    public void noWinnerOnEmpty() {
+        Program p = new Program();
+        assertEquals(Program.NONE, p.findWinner());
     }
 
     @Test
-    public void testUtilityPrintIntArray() {
-        int[] moves = {
-            0,1,2,
-            3,4,5,
-            6,7,8
-        };
-        Utility.print(moves);
+    public void isFullOnEmpty() {
+        Program p = new Program();
+        assertFalse(p.isFull());
     }
 
     @Test
-    public void testGenerateMovesEmptyBoard() {
-        Game game = new Game();
-        ArrayList<Integer> moves = new ArrayList<>();
-        game.generateMoves(game.board, moves);
-        assertEquals(9, moves.size());
-        for (int i = 0; i < 9; i++) {
-            assertEquals(Integer.valueOf(i), moves.get(i));
-        }
+    public void isFullAfterAllMoves() {
+        Program p = new Program();
+        p.place(0, 0); p.place(0, 1); p.place(0, 2);
+        p.place(1, 0); p.place(1, 1); p.place(1, 2);
+        p.place(2, 0); p.place(2, 1); p.place(2, 2);
+        assertTrue(p.isFull());
     }
 
     @Test
-    public void testMiniMaxReturnsValidMove() {
-        Game game = new Game();
-        int move = game.MiniMax(game.board, game.player2);
-        assertTrue(move >= 1 && move <= 9);
-    }    
-
-    @Test(timeout = 5000)
-    public void testMiniMaxOnEmptyBoard() {
-        Game game = new Game();
-        int move = game.MiniMax(game.board, game.player2);
-        assertTrue(move >= 1 && move <= 9);
+    public void isEndedFalseAtStart() {
+        Program p = new Program();
+        assertFalse(p.isEnded());
     }
 
     @Test
-    public void testCellConstructorAndGetters() {
-        TicTacToeCell cell = new TicTacToeCell(5, 2, 1);
-        assertEquals(5, cell.getNum());
-        assertEquals(2, cell.getCol());
-        assertEquals(1, cell.getRow());
-        assertEquals(' ', cell.getMarker());
+    public void isEndedAfterWin() {
+        Program p = new Program();
+        p.place(0, 0); p.place(1, 0);
+        p.place(0, 1); p.place(1, 1);
+        p.place(0, 2);
+        assertTrue(p.isEnded());
     }
 
     @Test
-    public void testSetMarkerChangesTextAndDisables() {
-        TicTacToeCell cell = new TicTacToeCell(1, 0, 0);
-        assertTrue(cell.isEnabled());
-        cell.setMarker("X");
-        assertEquals('X', cell.getMarker());
-        assertFalse(cell.isEnabled());
+    public void minimaxWinX() {
+        Program p = new Program();
+        p.place(0, 0); p.place(1, 0);
+        p.place(0, 1); p.place(1, 1);
+        p.place(0, 2);
+        int v = p.minimax(0, true);
+        assertTrue(v > 0);
     }
 
     @Test
-    public void testUtilityPrintArrayList() {
-        ArrayList<Integer> list = new ArrayList<>(Arrays.asList(0, 4, 8));
-        Utility.print(list);
+    public void minimaxWinO() {
+        Program p = new Program();
+        p.place(0, 0); p.place(1, 0);
+        p.place(2, 2); p.place(1, 1);
+        p.place(2, 1); p.place(1, 2);
+        int v = p.minimax(0, false);
+        assertTrue(v < 0);
+    }
+
+    @Test
+    public void minimaxDraw() {
+        Program p = new Program();
+        p.place(0, 0); p.place(0, 1); p.place(0, 2);
+        p.place(1, 1); p.place(1, 0); p.place(1, 2);
+        p.place(2, 1); p.place(2, 0); p.place(2, 2);
+        assertEquals(0, p.minimax(0, true));
+    }
+
+    @Test
+    public void bestMoveReturnsValid() {
+        Program p = new Program();
+        int[] m = p.bestMove();
+        assertNotNull(m);
+        assertEquals(2, m.length);
+        assertTrue(m[0] >= 0 && m[0] < 3);
+        assertTrue(m[1] >= 0 && m[1] < 3);
+    }
+
+    @Test
+    public void bestMoveBlocksOpponent() {
+        Program p = new Program();
+        p.place(0, 0); p.place(1, 0);
+        p.place(0, 1); p.place(1, 1);
+        int[] m = p.bestMove();
+        assertEquals(0, m[0]);
+        assertEquals(2, m[1]);
+    }
+
+    @Test
+    public void getCellAfterPlace() {
+        Program p = new Program();
+        p.place(2, 2);
+        assertEquals(Program.X, p.getCell(2, 2));
+        assertEquals(Program.NONE, p.getCell(0, 0));
+    }
+
+    @Test
+    public void isEndedFalseMidGame() {
+        Program p = new Program();
+        p.place(0, 0);
+        assertFalse(p.isEnded());
     }
 }
