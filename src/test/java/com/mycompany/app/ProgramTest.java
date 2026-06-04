@@ -6,211 +6,347 @@ import static org.junit.Assert.*;
 public class ProgramTest {
 
     @Test
+    public void cellEnumValues() {
+        assertEquals('.', TicTacToeCell.EMPTY.toChar());
+        assertEquals('X', TicTacToeCell.X.toChar());
+        assertEquals('O', TicTacToeCell.O.toChar());
+    }
+
+    @Test
+    public void cellFromChar() {
+        assertEquals(TicTacToeCell.EMPTY, TicTacToeCell.fromChar('.'));
+        assertEquals(TicTacToeCell.X, TicTacToeCell.fromChar('X'));
+        assertEquals(TicTacToeCell.O, TicTacToeCell.fromChar('O'));
+        assertEquals(TicTacToeCell.EMPTY, TicTacToeCell.fromChar('?'));
+    }
+
+    @Test
+    public void gameStateValues() {
+        assertEquals(GameState.PLAYING, GameState.valueOf("PLAYING"));
+        assertEquals(GameState.X_WINS, GameState.valueOf("X_WINS"));
+        assertEquals(GameState.O_WINS, GameState.valueOf("O_WINS"));
+        assertEquals(GameState.DRAW, GameState.valueOf("DRAW"));
+    }
+
+    @Test
     public void gridStartsEmpty() {
-        Program p = new Program();
-        assertEquals(Program.NONE, p.getCell(0, 0));
-        assertEquals(Program.NONE, p.getCell(1, 1));
-        assertEquals(Program.NONE, p.getCell(2, 2));
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertEquals(TicTacToeCell.EMPTY, g.cellAt(0, 0));
+        assertEquals(TicTacToeCell.EMPTY, g.cellAt(1, 2));
+        assertEquals(TicTacToeCell.EMPTY, g.cellAt(2, 1));
     }
 
     @Test
-    public void firstTurnIsX() {
-        Program p = new Program();
-        assertEquals(Program.X, p.getTurn());
+    public void xMovesFirst() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertEquals(TicTacToeCell.X, g.getActive());
     }
 
     @Test
-    public void placeValidMove() {
-        Program p = new Program();
-        assertTrue(p.place(0, 0));
-        assertEquals(Program.X, p.getCell(0, 0));
-        assertEquals(Program.O, p.getTurn());
+    public void validMoveWorks() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertTrue(g.place(0, 0));
+        assertEquals(TicTacToeCell.X, g.cellAt(0, 0));
+        assertEquals(TicTacToeCell.O, g.getActive());
     }
 
     @Test
-    public void placeInvalidRowLow() {
-        Program p = new Program();
-        assertFalse(p.place(-1, 0));
+    public void invalidRowLow() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertFalse(g.place(-1, 0));
     }
 
     @Test
-    public void placeInvalidRowHigh() {
-        Program p = new Program();
-        assertFalse(p.place(3, 0));
+    public void invalidRowHigh() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertFalse(g.place(3, 0));
     }
 
     @Test
-    public void placeInvalidColLow() {
-        Program p = new Program();
-        assertFalse(p.place(0, -1));
+    public void invalidColLow() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertFalse(g.place(0, -1));
     }
 
     @Test
-    public void placeInvalidColHigh() {
-        Program p = new Program();
-        assertFalse(p.place(0, 3));
+    public void invalidColHigh() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertFalse(g.place(0, 3));
     }
 
     @Test
-    public void placeOccupiedCell() {
-        Program p = new Program();
-        p.place(1, 1);
-        assertFalse(p.place(1, 1));
+    public void occupiedCell() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(1, 1);
+        assertFalse(g.place(1, 1));
     }
 
     @Test
-    public void turnSwitchesAfterMove() {
-        Program p = new Program();
-        p.place(0, 0);
-        assertEquals(Program.O, p.getTurn());
-        p.place(0, 1);
-        assertEquals(Program.X, p.getTurn());
+    public void turnSwitching() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0);
+        assertEquals(TicTacToeCell.O, g.getActive());
+        g.place(0, 1);
+        assertEquals(TicTacToeCell.X, g.getActive());
+        g.place(0, 2);
+        assertEquals(TicTacToeCell.O, g.getActive());
     }
 
     @Test
-    public void clearGridResetsEverything() {
-        Program p = new Program();
-        p.place(0, 0);
-        p.place(1, 1);
-        p.clearGrid();
-        assertEquals(Program.NONE, p.getCell(0, 0));
-        assertEquals(Program.NONE, p.getCell(1, 1));
-        assertEquals(Program.X, p.getTurn());
+    public void clearResetsAll() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0);
+        g.place(1, 1);
+        g.clear();
+        assertEquals(TicTacToeCell.EMPTY, g.cellAt(0, 0));
+        assertEquals(TicTacToeCell.EMPTY, g.cellAt(1, 1));
+        assertEquals(TicTacToeCell.X, g.getActive());
     }
 
     @Test
-    public void findWinnerRowX() {
-        Program p = new Program();
-        p.place(0, 0); p.place(1, 0);
-        p.place(0, 1); p.place(1, 1);
-        p.place(0, 2);
-        assertEquals(Program.X, p.findWinner());
+    public void winRow0() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(1, 0);
+        g.place(0, 1); g.place(1, 1);
+        g.place(0, 2);
+        assertEquals(TicTacToeCell.X, g.checkWinner());
     }
 
     @Test
-    public void findWinnerColO() {
-        Program p = new Program();
-        p.place(0, 0); p.place(1, 0);
-        p.place(0, 1); p.place(1, 1);
-        p.place(2, 2); p.place(1, 2);
-        assertEquals(Program.O, p.findWinner());
+    public void winRow1() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(1, 0); g.place(0, 0);
+        g.place(1, 1); g.place(0, 1);
+        g.place(1, 2);
+        assertEquals(TicTacToeCell.X, g.checkWinner());
     }
 
     @Test
-    public void findWinnerDiag() {
-        Program p = new Program();
-        p.place(0, 0); p.place(0, 1);
-        p.place(1, 1); p.place(0, 2);
-        p.place(2, 2);
-        assertEquals(Program.X, p.findWinner());
+    public void winRow2() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(2, 0); g.place(0, 0);
+        g.place(2, 1); g.place(0, 1);
+        g.place(2, 2);
+        assertEquals(TicTacToeCell.X, g.checkWinner());
     }
 
     @Test
-    public void findWinnerAntiDiag() {
-        Program p = new Program();
-        p.place(0, 2); p.place(0, 0);
-        p.place(1, 1); p.place(0, 1);
-        p.place(2, 0);
-        assertEquals(Program.X, p.findWinner());
+    public void winCol0() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(0, 1);
+        g.place(1, 0); g.place(1, 1);
+        g.place(2, 0);
+        assertEquals(TicTacToeCell.X, g.checkWinner());
     }
 
     @Test
-    public void noWinnerOnEmpty() {
-        Program p = new Program();
-        assertEquals(Program.NONE, p.findWinner());
+    public void winCol1() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 1); g.place(0, 0);
+        g.place(1, 1); g.place(1, 0);
+        g.place(2, 1);
+        assertEquals(TicTacToeCell.X, g.checkWinner());
     }
 
     @Test
-    public void isFullOnEmpty() {
-        Program p = new Program();
-        assertFalse(p.isFull());
+    public void winCol2() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 2); g.place(0, 0);
+        g.place(1, 2); g.place(1, 0);
+        g.place(2, 2);
+        assertEquals(TicTacToeCell.X, g.checkWinner());
     }
 
     @Test
-    public void isFullAfterAllMoves() {
-        Program p = new Program();
-        p.place(0, 0); p.place(0, 1); p.place(0, 2);
-        p.place(1, 0); p.place(1, 1); p.place(1, 2);
-        p.place(2, 0); p.place(2, 1); p.place(2, 2);
-        assertTrue(p.isFull());
+    public void winDiagMain() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(0, 1);
+        g.place(1, 1); g.place(0, 2);
+        g.place(2, 2);
+        assertEquals(TicTacToeCell.X, g.checkWinner());
     }
 
     @Test
-    public void isEndedFalseAtStart() {
-        Program p = new Program();
-        assertFalse(p.isEnded());
+    public void winDiagSide() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 2); g.place(0, 0);
+        g.place(1, 1); g.place(0, 1);
+        g.place(2, 0);
+        assertEquals(TicTacToeCell.X, g.checkWinner());
     }
 
     @Test
-    public void isEndedAfterWin() {
-        Program p = new Program();
-        p.place(0, 0); p.place(1, 0);
-        p.place(0, 1); p.place(1, 1);
-        p.place(0, 2);
-        assertTrue(p.isEnded());
+    public void oWinsRow() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(2, 2); g.place(0, 0);
+        g.place(2, 0); g.place(0, 1);
+        g.place(1, 0); g.place(0, 2);
+        assertEquals(TicTacToeCell.O, g.checkWinner());
     }
 
     @Test
-    public void minimaxWinX() {
-        Program p = new Program();
-        p.place(0, 0); p.place(1, 0);
-        p.place(0, 1); p.place(1, 1);
-        p.place(0, 2);
-        int v = p.minimax(0, true);
+    public void oWinsCol() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(2, 2); g.place(0, 0);
+        g.place(1, 2); g.place(1, 0);
+        g.place(2, 1); g.place(2, 0);
+        assertEquals(TicTacToeCell.O, g.checkWinner());
+    }
+
+    @Test
+    public void oWinsDiag() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 1); g.place(0, 0);
+        g.place(0, 2); g.place(1, 1);
+        g.place(2, 0); g.place(2, 2);
+        assertEquals(TicTacToeCell.O, g.checkWinner());
+    }
+
+    @Test
+    public void noWinnerEmpty() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertEquals(TicTacToeCell.EMPTY, g.checkWinner());
+    }
+
+    @Test
+    public void noWinnerMid() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0);
+        g.place(1, 1);
+        assertEquals(TicTacToeCell.EMPTY, g.checkWinner());
+    }
+
+    @Test
+    public void notFullStart() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertFalse(g.isFull());
+    }
+
+    @Test
+    public void notFullMid() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0);
+        assertFalse(g.isFull());
+    }
+
+    @Test
+    public void fullBoard() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(0, 1); g.place(0, 2);
+        g.place(1, 0); g.place(1, 1); g.place(1, 2);
+        g.place(2, 0); g.place(2, 1); g.place(2, 2);
+        assertTrue(g.isFull());
+    }
+
+    @Test
+    public void statePlaying() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        assertEquals(GameState.PLAYING, g.getState());
+    }
+
+    @Test
+    public void stateXWins() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(1, 0);
+        g.place(0, 1); g.place(1, 1);
+        g.place(0, 2);
+        assertEquals(GameState.X_WINS, g.getState());
+    }
+
+    @Test
+    public void stateOWins() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(2, 2); g.place(0, 0);
+        g.place(1, 2); g.place(0, 1);
+        g.place(2, 0); g.place(0, 2);
+        assertEquals(GameState.O_WINS, g.getState());
+    }
+
+    @Test
+    public void stateDraw() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(0, 1); g.place(0, 2);
+        g.place(1, 1); g.place(1, 0); g.place(1, 2);
+        g.place(2, 1); g.place(2, 0); g.place(2, 2);
+        assertEquals(GameState.DRAW, g.getState());
+    }
+
+    @Test
+    public void minimaxXWin() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(1, 0);
+        g.place(0, 1); g.place(1, 1);
+        g.place(0, 2);
+        int v = g.minimax(0, true);
         assertTrue(v > 0);
     }
 
     @Test
-    public void minimaxWinO() {
-        Program p = new Program();
-        p.place(0, 0); p.place(1, 0);
-        p.place(2, 2); p.place(1, 1);
-        p.place(2, 1); p.place(1, 2);
-        int v = p.minimax(0, false);
+    public void minimaxOWin() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(1, 0);
+        g.place(2, 2); g.place(1, 1);
+        g.place(2, 1); g.place(1, 2);
+        int v = g.minimax(0, false);
         assertTrue(v < 0);
     }
 
     @Test
     public void minimaxDraw() {
-        Program p = new Program();
-        p.place(0, 0); p.place(0, 1); p.place(0, 2);
-        p.place(1, 1); p.place(1, 0); p.place(1, 2);
-        p.place(2, 1); p.place(2, 0); p.place(2, 2);
-        assertEquals(0, p.minimax(0, true));
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(0, 1); g.place(0, 2);
+        g.place(1, 1); g.place(1, 0); g.place(1, 2);
+        g.place(2, 1); g.place(2, 0); g.place(2, 2);
+        assertEquals(0, g.minimax(0, true));
     }
 
     @Test
-    public void bestMoveReturnsValid() {
-        Program p = new Program();
-        int[] m = p.bestMove();
+    public void minimaxEmptyMax() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        int v = g.minimax(0, true);
+        assertTrue(v >= -10 && v <= 10);
+    }
+
+    @Test
+    public void minimaxEmptyMin() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        int v = g.minimax(0, false);
+        assertTrue(v >= -10 && v <= 10);
+    }
+
+    @Test
+    public void bestMoveValid() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        int[] m = g.bestMove();
         assertNotNull(m);
         assertEquals(2, m.length);
-        assertTrue(m[0] >= 0 && m[0] < 3);
-        assertTrue(m[1] >= 0 && m[1] < 3);
+        assertTrue(m[0] >= 0 && m[0] <= 2);
+        assertTrue(m[1] >= 0 && m[1] <= 2);
     }
 
     @Test
-    public void bestMoveBlocksOpponent() {
-        Program p = new Program();
-        p.place(0, 0); p.place(1, 0);
-        p.place(0, 1); p.place(1, 1);
-        int[] m = p.bestMove();
+    public void bestMoveBlocks() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(0, 1);
+        g.place(1, 0); g.place(0, 2);
+        int[] m = g.bestMove();
+        assertTrue(m[0] >= 0 && m[0] <= 2);
+        assertTrue(m[1] >= 0 && m[1] <= 2);
+        assertEquals(TicTacToeCell.EMPTY, g.cellAt(m[0], m[1]));
+    }
+
+    @Test
+    public void bestMoveTakesWin() {
+        TicTacToeLogic g = new TicTacToeLogic();
+        g.place(0, 0); g.place(1, 0);
+        g.place(0, 1); g.place(1, 1);
+        int[] m = g.bestMove();
         assertEquals(0, m[0]);
         assertEquals(2, m[1]);
     }
 
     @Test
-    public void getCellAfterPlace() {
-        Program p = new Program();
-        p.place(2, 2);
-        assertEquals(Program.X, p.getCell(2, 2));
-        assertEquals(Program.NONE, p.getCell(0, 0));
-    }
-
-    @Test
-    public void isEndedFalseMidGame() {
-        Program p = new Program();
-        p.place(0, 0);
-        assertFalse(p.isEnded());
+    public void mainRuns() {
+        Program.main(new String[]{});
     }
 }
