@@ -2,8 +2,8 @@ package com.mycompany.app;
 
 public class Program {
     public static void main(String[] args) {
-        TicTacToeLogic game = new TicTacToeLogic();
-        System.out.println("TicTacToe Minimax Ready");
-        System.out.println("Cell(0,0) = " + game.cellAt(0, 0).toChar());
+        TicTacToe game = new TicTacToe();
+        System.out.println("Tic-Tac-Toe AI Engine Initialized");
+        System.out.println("Position [0,0] contains: " + game.getSymbolAt(0, 0).display());
     }
 }
