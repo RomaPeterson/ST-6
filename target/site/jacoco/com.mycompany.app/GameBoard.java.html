@@ -41,22 +41,23 @@ public class GameBoard {
 <span class="fc" id="L41">        return false;</span>
     }
 
+    // провека побды по всем линиям
     public Player checkWin() {
-<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = 0; i &lt; 3; i++) {</span>
-<span class="fc bfc" id="L46" title="All 6 branches covered.">            if (cells[i*3] != Player.EMPTY &amp;&amp; cells[i*3] == cells[i*3+1] &amp;&amp; cells[i*3+1] == cells[i*3+2])</span>
-<span class="fc" id="L47">                return cells[i*3];</span>
-<span class="fc bfc" id="L48" title="All 6 branches covered.">            if (cells[i] != Player.EMPTY &amp;&amp; cells[i] == cells[i+3] &amp;&amp; cells[i+3] == cells[i+6])</span>
-<span class="fc" id="L49">                return cells[i];</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        for (int i = 0; i &lt; 3; i++) {</span>
+<span class="fc bfc" id="L47" title="All 6 branches covered.">            if (cells[i*3] != Player.EMPTY &amp;&amp; cells[i*3] == cells[i*3+1] &amp;&amp; cells[i*3+1] == cells[i*3+2])</span>
+<span class="fc" id="L48">                return cells[i*3];</span>
+<span class="fc bfc" id="L49" title="All 6 branches covered.">            if (cells[i] != Player.EMPTY &amp;&amp; cells[i] == cells[i+3] &amp;&amp; cells[i+3] == cells[i+6])</span>
+<span class="fc" id="L50">                return cells[i];</span>
         }
-<span class="fc bfc" id="L51" title="All 6 branches covered.">        if (cells[0] != Player.EMPTY &amp;&amp; cells[0] == cells[4] &amp;&amp; cells[4] == cells[8])</span>
-<span class="fc" id="L52">            return cells[0];</span>
-<span class="fc bfc" id="L53" title="All 6 branches covered.">        if (cells[2] != Player.EMPTY &amp;&amp; cells[2] == cells[4] &amp;&amp; cells[4] == cells[6])</span>
-<span class="fc" id="L54">            return cells[2];</span>
-<span class="fc" id="L55">        return Player.EMPTY;</span>
+<span class="fc bfc" id="L52" title="All 6 branches covered.">        if (cells[0] != Player.EMPTY &amp;&amp; cells[0] == cells[4] &amp;&amp; cells[4] == cells[8])</span>
+<span class="fc" id="L53">            return cells[0];</span>
+<span class="fc bfc" id="L54" title="All 6 branches covered.">        if (cells[2] != Player.EMPTY &amp;&amp; cells[2] == cells[4] &amp;&amp; cells[4] == cells[6])</span>
+<span class="fc" id="L55">            return cells[2];</span>
+<span class="fc" id="L56">        return Player.EMPTY;</span>
     }
 
     public int getSize() {
-<span class="fc" id="L59">        return 9;</span>
+<span class="fc" id="L60">        return 9;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

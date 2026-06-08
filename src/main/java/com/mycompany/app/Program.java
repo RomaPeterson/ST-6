@@ -3,7 +3,7 @@ package com.mycompany.app;
 public class Program {
     public static void main(String[] args) {
         GameBoard b = new GameBoard();
-        Strategy s = new Strategy(b);
+        Solver s = new Solver(b);
 
         b.set(0, Player.FIRST);
         b.set(4, Player.SECOND);

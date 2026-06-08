@@ -13,7 +13,7 @@ public class ProgramTests {
     @Test
     public void testGameFlow() {
         GameBoard b = new GameBoard();
-        Strategy s = new Strategy(b);
+        Solver s = new Solver(b);
         s.apply(0);
         s.apply(4);
         s.apply(1);

@@ -1,5 +1,5 @@
 com\mycompany\app\GameBoard.class
 com\mycompany\app\Outcome.class
 com\mycompany\app\Program.class
+com\mycompany\app\Solver.class
 com\mycompany\app\Player.class
-com\mycompany\app\Strategy.class

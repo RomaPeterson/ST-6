@@ -41,6 +41,7 @@ public class GameBoard {
         return false;
     }
 
+    // провека побды по всем линиям
     public Player checkWin() {
         for (int i = 0; i < 3; i++) {
             if (cells[i*3] != Player.EMPTY && cells[i*3] == cells[i*3+1] && cells[i*3+1] == cells[i*3+2])

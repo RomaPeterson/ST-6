@@ -1,10 +1,10 @@
 package com.mycompany.app;
 
-public class Strategy {
+public class Solver {
     private GameBoard board;
     private Player current;
 
-    public Strategy(GameBoard board) {
+    public Solver(GameBoard board) {
         this.board = board;
         this.current = Player.FIRST;
     }
@@ -31,6 +31,7 @@ public class Strategy {
         return Outcome.ACTIVE;
     }
 
+    // минимаксный перебор
     public int analyze(int depth, boolean max) {
         Outcome r = evaluate();
         if (r == Outcome.WIN_FIRST) return 10 - depth;
@@ -62,6 +63,7 @@ public class Strategy {
         return best;
     }
 
+    // поиск лучшего хода для текущего игрока
     public int findBest() {
         int bestVal = Integer.MIN_VALUE;
         int bestIdx = -1;
