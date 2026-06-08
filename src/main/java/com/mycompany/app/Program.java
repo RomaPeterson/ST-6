@@ -2,8 +2,19 @@ package com.mycompany.app;
 
 public class Program {
     public static void main(String[] args) {
-        TicTacToe game = new TicTacToe();
-        System.out.println("Tic-Tac-Toe AI Engine Initialized");
-        System.out.println("Position [0,0] contains: " + game.getSymbolAt(0, 0).display());
+        GameBoard b = new GameBoard();
+        Strategy s = new Strategy(b);
+
+        b.set(0, Player.FIRST);
+        b.set(4, Player.SECOND);
+        b.set(1, Player.FIRST);
+        b.set(5, Player.SECOND);
+
+        int move = s.findBest();
+        s.apply(move);
+
+        System.out.println("Game engine ready");
+        System.out.println("Best move: " + move);
+        System.out.println("Outcome: " + s.evaluate());
     }
 }

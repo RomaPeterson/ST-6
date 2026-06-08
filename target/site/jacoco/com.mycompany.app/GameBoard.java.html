@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="ru"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>GameBoard.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">my-app</a> &gt; <a href="index.source.html" class="el_package">com.mycompany.app</a> &gt; <span class="el_source">GameBoard.java</span></div><h1>GameBoard.java</h1><pre class="source lang-java linenums">package com.mycompany.app;
+
+public class GameBoard {
+    private Player[] cells;
+
+<span class="fc" id="L6">    public GameBoard() {</span>
+<span class="fc" id="L7">        cells = new Player[9];</span>
+<span class="fc" id="L8">        clear();</span>
+<span class="fc" id="L9">    }</span>
+
+    public void clear() {
+<span class="fc bfc" id="L12" title="All 2 branches covered.">        for (int i = 0; i &lt; 9; i++) {</span>
+<span class="fc" id="L13">            cells[i] = Player.EMPTY;</span>
+        }
+<span class="fc" id="L15">    }</span>
+
+    public Player get(int i) {
+<span class="fc bfc" id="L18" title="All 4 branches covered.">        if (i &lt; 0 || i &gt;= 9) return Player.EMPTY;</span>
+<span class="fc" id="L19">        return cells[i];</span>
+    }
+
+    public boolean set(int i, Player p) {
+<span class="fc bfc" id="L23" title="All 4 branches covered.">        if (i &lt; 0 || i &gt;= 9) return false;</span>
+<span class="fc bfc" id="L24" title="All 2 branches covered.">        if (cells[i] != Player.EMPTY) return false;</span>
+<span class="fc" id="L25">        cells[i] = p;</span>
+<span class="fc" id="L26">        return true;</span>
+    }
+
+    public void unset(int i) {
+<span class="pc bpc" id="L30" title="2 of 4 branches missed.">        if (i &gt;= 0 &amp;&amp; i &lt; 9) cells[i] = Player.EMPTY;</span>
+<span class="fc" id="L31">    }</span>
+
+    public boolean isFree(int i) {
+<span class="fc bfc" id="L34" title="All 6 branches covered.">        return i &gt;= 0 &amp;&amp; i &lt; 9 &amp;&amp; cells[i] == Player.EMPTY;</span>
+    }
+
+    public boolean hasSpace() {
+<span class="fc bfc" id="L38" title="All 2 branches covered.">        for (int i = 0; i &lt; 9; i++) {</span>
+<span class="fc bfc" id="L39" title="All 2 branches covered.">            if (cells[i] == Player.EMPTY) return true;</span>
+        }
+<span class="fc" id="L41">        return false;</span>
+    }
+
+    public Player checkWin() {
+<span class="fc bfc" id="L45" title="All 2 branches covered.">        for (int i = 0; i &lt; 3; i++) {</span>
+<span class="fc bfc" id="L46" title="All 6 branches covered.">            if (cells[i*3] != Player.EMPTY &amp;&amp; cells[i*3] == cells[i*3+1] &amp;&amp; cells[i*3+1] == cells[i*3+2])</span>
+<span class="fc" id="L47">                return cells[i*3];</span>
+<span class="fc bfc" id="L48" title="All 6 branches covered.">            if (cells[i] != Player.EMPTY &amp;&amp; cells[i] == cells[i+3] &amp;&amp; cells[i+3] == cells[i+6])</span>
+<span class="fc" id="L49">                return cells[i];</span>
+        }
+<span class="fc bfc" id="L51" title="All 6 branches covered.">        if (cells[0] != Player.EMPTY &amp;&amp; cells[0] == cells[4] &amp;&amp; cells[4] == cells[8])</span>
+<span class="fc" id="L52">            return cells[0];</span>
+<span class="fc bfc" id="L53" title="All 6 branches covered.">        if (cells[2] != Player.EMPTY &amp;&amp; cells[2] == cells[4] &amp;&amp; cells[4] == cells[6])</span>
+<span class="fc" id="L54">            return cells[2];</span>
+<span class="fc" id="L55">        return Player.EMPTY;</span>
+    }
+
+    public int getSize() {
+<span class="fc" id="L59">        return 9;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
